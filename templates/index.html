@@ -1,0 +1,188 @@
+{% extends "base.html" %}
+
+{% block title %}Home - ChatBot{% endblock %}
+
+{% block extra_css %}
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, var(--primary-color), #2c3e50);
+        color: white;
+        padding: 80px 0;
+        margin-bottom: 40px;
+        border-radius: 0 0 20px 20px;
+    }
+
+    .feature-card {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 15px;
+        padding: 30px;
+        height: 100%;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .feature-icon {
+        font-size: 2.5rem;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+    }
+
+    .cta-section {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 15px;
+        padding: 40px;
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    .stats-section {
+        background-color: var(--secondary-color);
+        padding: 40px 0;
+        border-radius: 15px;
+        margin: 40px 0;
+    }
+
+    .stat-item {
+        text-align: center;
+        padding: 20px;
+    }
+
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--primary-color);
+    }
+
+    .stat-label {
+        color: var(--text-color);
+        margin-top: 10px;
+    }
+
+    @media (max-width: 768px) {
+        .hero-section {
+            padding: 40px 0;
+        }
+        
+        .feature-card {
+            margin-bottom: 20px;
+        }
+        
+        .cta-section {
+            padding: 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-md-6">
+                <h1 class="display-4 fw-bold">Your Intelligent AI Assistant</h1>
+                <p class="lead">Powered by advanced AI and Google Search to provide accurate and helpful responses to your questions.</p>
+                {% if not current_user.is_authenticated %}
+                <div class="mt-4">
+                    <a href="{{ url_for('register') }}" class="btn btn-light btn-lg me-3">
+                        <i class="fas fa-user-plus me-2"></i>Get Started
+                    </a>
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </a>
+                </div>
+                {% else %}
+                <div class="mt-4">
+                    <a href="{{ url_for('chat') }}" class="btn btn-light btn-lg">
+                        <i class="fas fa-comments me-2"></i>Start Chatting
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+            <div class="col-md-6">
+                <img src="https://via.placeholder.com/600x400" alt="AI Assistant" class="img-fluid rounded shadow">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <h3>Smart Search</h3>
+                <p>Get accurate and relevant information using our advanced search capabilities powered by Google.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3>AI-Powered</h3>
+                <p>Experience intelligent conversations with our advanced AI assistant that understands context.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Secure & Private</h3>
+                <p>Your conversations are encrypted and secure, ensuring your privacy is protected.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="stats-section">
+        <div class="row">
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">10K+</div>
+                    <div class="stat-label">Active Users</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">1M+</div>
+                    <div class="stat-label">Questions Answered</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">99%</div>
+                    <div class="stat-label">Accuracy Rate</div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-item">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Availability</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="cta-section">
+        <h2>Ready to Experience the Future of AI Chat?</h2>
+        <p class="lead">Join thousands of users who are already benefiting from our intelligent assistant.</p>
+        {% if not current_user.is_authenticated %}
+        <a href="{{ url_for('register') }}" class="btn btn-primary btn-lg mt-3">
+            <i class="fas fa-user-plus me-2"></i>Create Your Account
+        </a>
+        {% else %}
+        <a href="{{ url_for('chat') }}" class="btn btn-primary btn-lg mt-3">
+            <i class="fas fa-comments me-2"></i>Start Chatting Now
+        </a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %} 

@@ -1,0 +1,192 @@
+{% extends "base.html" %}
+
+{% block title %}Search History - ChatBot{% endblock %}
+
+{% block extra_css %}
+<style>
+    .history-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .history-item {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 15px;
+        padding: 20px;
+        margin-bottom: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .history-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+
+    .history-query {
+        font-weight: bold;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+    }
+
+    .history-response {
+        color: var(--text-color);
+        margin-bottom: 15px;
+        white-space: pre-wrap;
+    }
+
+    .history-timestamp {
+        color: var(--footer-text);
+        font-size: 0.9rem;
+    }
+
+    .history-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 15px;
+    }
+
+    .history-actions button {
+        padding: 5px 15px;
+        border-radius: 5px;
+        border: none;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .copy-btn {
+        background-color: var(--primary-color);
+        color: white;
+    }
+
+    .delete-btn {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .empty-history {
+        text-align: center;
+        padding: 40px;
+        color: var(--text-color);
+    }
+
+    .empty-history i {
+        font-size: 3rem;
+        color: var(--primary-color);
+        margin-bottom: 20px;
+    }
+
+    .search-filter {
+        margin-bottom: 30px;
+    }
+
+    .search-filter input {
+        width: 100%;
+        padding: 10px 15px;
+        border-radius: 8px;
+        border: 1px solid var(--border-color);
+        background-color: var(--card-bg);
+        color: var(--text-color);
+    }
+
+    @media (max-width: 768px) {
+        .history-container {
+            padding: 0 15px;
+        }
+        
+        .history-item {
+            padding: 15px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="history-container">
+    <h1 class="mb-4">Search History</h1>
+    
+    <div class="search-filter">
+        <input type="text" id="searchFilter" placeholder="Search your history..." class="form-control">
+    </div>
+
+    {% if search_history %}
+        {% for item in search_history %}
+        <div class="history-item" data-query="{{ item.query|lower }}">
+            <div class="history-query">
+                <i class="fas fa-search me-2"></i>{{ item.query }}
+            </div>
+            <div class="history-response">
+                {{ item.response|markdown|safe }}
+            </div>
+            <div class="history-timestamp">
+                <i class="fas fa-clock me-2"></i>{{ item.timestamp.strftime('%Y-%m-%d %H:%M:%S') }}
+            </div>
+            <div class="history-actions">
+                <button class="copy-btn" onclick="copyToClipboard('{{ item.response|replace("'", "\\'")|replace("\n", "\\n") }}')">
+                    <i class="fas fa-copy me-2"></i>Copy Response
+                </button>
+                <button class="delete-btn" onclick="deleteHistoryItem({{ item.id }})">
+                    <i class="fas fa-trash me-2"></i>Delete
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="empty-history">
+            <i class="fas fa-history"></i>
+            <h3>No Search History Yet</h3>
+            <p>Your search history will appear here once you start chatting with the AI.</p>
+            <a href="{{ url_for('chat') }}" class="btn btn-primary mt-3">
+                <i class="fas fa-comments me-2"></i>Start Chatting
+            </a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Search filter functionality
+    document.getElementById('searchFilter').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const historyItems = document.querySelectorAll('.history-item');
+        
+        historyItems.forEach(item => {
+            const query = item.getAttribute('data-query');
+            if (query.includes(searchTerm)) {
+                item.style.display = 'block';
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+
+    // Copy to clipboard functionality
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(() => {
+            alert('Response copied to clipboard!');
+        }).catch(err => {
+            console.error('Failed to copy text: ', err);
+        });
+    }
+
+    // Delete history item
+    function deleteHistoryItem(id) {
+        if (confirm('Are you sure you want to delete this history item?')) {
+            fetch(`/delete_history/${id}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    }
+</script>
+{% endblock %} 
