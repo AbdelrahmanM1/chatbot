@@ -1,9 +1,9 @@
-Flask==2.3.3
+Flask==3.0.2
 Flask-SQLAlchemy==3.1.1
-Flask-Login==0.6.2
+Flask-Login==0.6.3
 Flask-WTF==1.2.1
-Werkzeug==2.3.7
-google-api-python-client==2.108.0
-python-dotenv==1.0.0
-markdown==3.5.1
+Werkzeug==3.0.1
+google-api-python-client==2.118.0
+python-dotenv==1.0.1
+markdown==3.5.2
 Flask-Markdown==0.3 

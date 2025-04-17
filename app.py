@@ -15,7 +15,7 @@ load_dotenv()
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'asdasdafsdfsfdsdsf')
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///chatbot.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DATABASE_URL', 'sqlite:///chatbot.db')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize extensions
@@ -233,7 +233,10 @@ def get_ai_response(query):
         print(f"Error in get_ai_response: {str(e)}")
         return "I'm sorry, I encountered an error while processing your request. Please try again later."
 
+# Create tables if they don't exist
+with app.app_context():
+    db.create_all()
+
+# This is required for Vercel
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
     app.run(debug=True) 
